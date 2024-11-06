@@ -1,16 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import ReactSpeedometer from 'react-d3-speedometer';
-
-interface DashboardInfo {
-  cpu: {
-    model: string;
-    cores: number;
-    load: number;
-  };
-  memory: {
-    usage: number;
-  };
-}
+import CPUInfo from './CPUInfo';
+import MemoryInfo from './MemoryInfo';
+import { DashboardInfo } from '../main/types';
 
 const Dashboard: React.FC = () => {
   const [dashboardInfo, setDashboardInfo] = useState<DashboardInfo | null>(
@@ -28,46 +19,24 @@ const Dashboard: React.FC = () => {
         console.error(err);
       }
     };
+    fetchDashboardInfo();
 
+    // intervalle de 2sec
     const intervalId = setInterval(fetchDashboardInfo, 2000);
+
+    // Nettoyage de l'intervalle pour éviter les fuites de mémoire
     return () => clearInterval(intervalId);
   }, []);
 
-  if (error) {
-    return <div>{error}</div>;
-  }
 
-  if (!dashboardInfo) {
-    return <div>Loading...</div>;
-  }
+  if (error) return <div>{error}</div>;
+  if (!dashboardInfo) return <div>Loading...</div>;
 
   return (
     <div>
       <h1>Dashboard</h1>
-      <h2>CPU</h2>
-      <p>Model: {dashboardInfo.cpu.model || 'N/A'}</p>
-      <p>Cores: {dashboardInfo.cpu.cores || 'N/A'}</p>
-
-      <ReactSpeedometer
-        maxValue={100}
-        value={dashboardInfo.cpu.load}
-        needleColor="red"
-        startColor="green"
-        endColor="red"
-        segments={10}
-        currentValueText="CPU Load: ${value}%"
-      />
-
-      <h2>Memory</h2>
-      <ReactSpeedometer
-        maxValue={100}
-        value={dashboardInfo.memory.usage}
-        needleColor="blue"
-        startColor="green"
-        endColor="orange"
-        segments={10}
-        currentValueText="Memory Usage: ${value}%"
-      />
+      <CPUInfo cpu={dashboardInfo.cpu} />
+      <MemoryInfo memory={dashboardInfo.memory} />
     </div>
   );
 };

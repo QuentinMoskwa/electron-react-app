@@ -3,7 +3,7 @@
 import { contextBridge, ipcRenderer, IpcRendererEvent } from 'electron';
 
 // Définir les types de canaux
-export type Channels = 'ipc-example' | 'get-system-info';
+export type Channels = 'get-system-info';
 
 const electronHandler = {
   ipcRenderer: {

@@ -1,34 +1,60 @@
-/*
- * @NOTE: Prepend a `~` to css file paths that are in your node_modules
- *        See https://github.com/webpack-contrib/sass-loader#imports
- */
 body {
   position: relative;
   color: white;
   height: 100vh;
   background: linear-gradient(135deg, rgba(37, 40, 190, 0.8), rgba(123, 81, 219, 0.8)),
     url('https://www.transparenttextures.com/patterns/asfalt-dark.png');
-  /* Adding a subtle texture */
   background-size: cover;
   font-family: 'Arial', sans-serif;
-  display: flex;
+  /* display: flex; */
   justify-content: center;
   align-items: center;
   text-align: center;
-  padding: 20px;
-  box-sizing: border-box;
-  overflow: hidden;
+  /* padding: 20px; */
+  /* box-sizing: border-box; */
+  /* overflow: hidden; */
 }
 
 h1 {
   font-size: 3rem;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
 }
 
 h2 {
   font-size: 2rem;
-  margin: 20px 0 10px;
+  margin: 20px 0;
   color: #ffffff;
+}
+
+.dashboard-container {
+  display: flex;
+  /* flex-wrap: wrap; */
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  width: 100vw;
+  /* margin: 20px; */
+  /* scale: 0.8; */
+}
+
+.dashboards-container
+{
+  display: flex;
+  /* flex-wrap: wrap; */
+  justify-content: space-evenly;
+  width: 100%;
+  align-items: center;
+  /* max-width: 1200px; */
+  /* margin: -100px 20px 20px 20px; */
+}
+
+.component-container {
+  margin: 10px;
+  width: 300px;
+  text-align: center;
+  padding: 10px;
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 8px;
 }
 
 button {
@@ -64,21 +90,10 @@ a:hover {
   text-decoration: underline;
 }
 
-.Hello {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: 20px 0;
-}
-
-.red {
-  color: red;
-}
-
-.segment-value, .current-value {
+.current-value, .segment-value {
   fill: #fff !important;
 }
 
-.speedometer{
+.speedometer {
   height: 200px !important;
 }

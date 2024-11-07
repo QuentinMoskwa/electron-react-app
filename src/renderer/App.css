@@ -2,9 +2,12 @@ body {
   position: relative;
   color: white;
   height: 100vh;
-  background: linear-gradient(135deg, rgba(37, 40, 190, 0.8), rgba(123, 81, 219, 0.8)),
-    url('https://www.transparenttextures.com/patterns/asfalt-dark.png');
-  background-size: cover;
+  /* background-color: gray; */
+  background: linear-gradient(135deg, rgba(37, 40, 190, 0.8), rgba(123, 81, 219, 0.8));
+    /* url('https://www.transparenttextures.com/patterns/asfalt-dark.png'); */
+  /* make the gradient loop */
+  background-size: 200% 200%;
+  animation: gradient 15s ease infinite;
   font-family: 'Arial', sans-serif;
   /* display: flex; */
   justify-content: center;
@@ -12,7 +15,7 @@ body {
   text-align: center;
   /* padding: 20px; */
   /* box-sizing: border-box; */
-  /* overflow: hidden; */
+  overflow-x: hidden;
 }
 
 h1 {
@@ -96,4 +99,69 @@ a:hover {
 
 .speedometer {
   height: 200px !important;
+}
+
+
+.diagnostic-container {
+  background: rgba(0, 0, 0, 0.6);
+  color: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  width: 80%;
+  max-width: 500px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.analyzing,
+.waiting {
+  font-size: 1.2rem;
+  color: #ffd700;
+}
+
+.progress-bar {
+  background: #333;
+  border-radius: 10px;
+  overflow: hidden;
+  height: 20px;
+  width: 100%;
+  margin: 10px 0;
+}
+
+.progress {
+  background: #00ff7f;
+  height: 100%;
+  transition: width 0.2s ease;
+}
+
+.progress-text {
+  font-size: 1rem;
+  color: #ffd700;
+}
+
+.results {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  font-size: 1rem;
+  margin-top: 20px;
+}
+
+.result-item {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 10px;
+  border-radius: 5px;
+  margin: 5px 0;
+  width: 100%;
+  text-align: left;
+}
+
+.result-item strong {
+  display: block;
+  font-size: 1.1rem;
+  color: #00ff7f;
+}
+
+.result-item strong:before {
+  content: '⚙️ ';
 }

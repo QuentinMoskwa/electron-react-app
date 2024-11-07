@@ -1,6 +1,8 @@
 import { fetchSystemData, fetchDiskData } from './systemServices';
 
-export const runDiagnostic = async () => {
+export const runDiagnostic = async (
+  updateProgress: (progress: number) => void,
+) => {
   let cpuData: number[] = [];
   let memoryData: number[] = [];
   let diskDataC: number = 0;
@@ -15,32 +17,50 @@ export const runDiagnostic = async () => {
   };
 
   const intervalId = setInterval(fetchDiagnosticData, 2000);
-  const progressInterval = setInterval(() => {
-    // ici, vous pouvez gérer l'état de la progression dans le composant
-  }, 2000);
+
+  const totalDuration = 60000; // 1 minute (60 seconds)
+  const startTime = Date.now();
 
   return new Promise((resolve) => {
-    setTimeout(async () => {
-      clearInterval(intervalId);
-      clearInterval(progressInterval);
+    const progressInterval = setInterval(() => {
+      const elapsedTime = Date.now() - startTime;
+      const progress = Math.min((elapsedTime / totalDuration) * 100, 100);
+      updateProgress(progress);
 
-      // Récupérer les données des disques après la période d'analyse pour éviter de les fetch alors que la valeur ne bouge pas
-      const diskData = await fetchDiskData();
-      diskDataC = diskData.diskC;
-      diskDataD = diskData.diskD;
+      if (elapsedTime >= totalDuration) {
+        clearInterval(intervalId);
+        clearInterval(progressInterval);
 
-      const cpuAverage = calculateAverage(cpuData);
-      const memoryAverage = calculateAverage(memoryData);
+        console.log('Fetching disk data...');
+        fetchDiskData()
+          .then((diskData) => {
+            console.log('Disk data fetched:', diskData);
+            diskDataC = diskData.diskC;
+            diskDataD = diskData.diskD;
 
-      const diagnosticSummary = {
-        cpu: `CPU: ${getHealthStatus(cpuAverage)} (${cpuAverage.toFixed(2)}% utilisé en moyenne) - ${getExplanation(cpuAverage)}`,
-        memory: `RAM: ${getHealthStatus(memoryAverage)} (${memoryAverage.toFixed(2)}% utilisé en moyenne) - ${getExplanation(memoryAverage)}`,
-        diskC: `Disque C: ${getHealthStatus(diskDataC)} (${diskDataC.toFixed(2)}% utilisé) - ${getExplanation(diskDataC)}`,
-        diskD: `Disque D: ${getHealthStatus(diskDataD)} (${diskDataD.toFixed(2)}% utilisé) - ${getExplanation(diskDataD)}`,
-      };
+            const cpuAverage = calculateAverage(cpuData);
+            const memoryAverage = calculateAverage(memoryData);
 
-      resolve(diagnosticSummary);
-    }, 60000);
+            const diagnosticSummary = {
+              cpu: `CPU: ${getHealthStatus(cpuAverage)} (${cpuAverage.toFixed(2)}% utilisé en moyenne) - ${getExplanation(cpuAverage)}`,
+              memory: `RAM: ${getHealthStatus(memoryAverage)} (${memoryAverage.toFixed(2)}% utilisé en moyenne) - ${getExplanation(memoryAverage)}`,
+              diskC: `Disque C: ${getHealthStatus(diskDataC)} (${diskDataC.toFixed(2)}% utilisé) - ${getExplanation(diskDataC)}`,
+              diskD: `Disque D: ${getHealthStatus(diskDataD)} (${diskDataD.toFixed(2)}% utilisé) - ${getExplanation(diskDataD)}`,
+            };
+
+            resolve(diagnosticSummary);
+          })
+          .catch((error) => {
+            console.error('Error fetching disk data:', error);
+            resolve({
+              cpu: 'Erreur',
+              memory: 'Erreur',
+              diskC: 'Erreur',
+              diskD: 'Erreur',
+            });
+          });
+      }
+    }, 1000);
   });
 };
 

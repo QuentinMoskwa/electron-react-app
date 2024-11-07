@@ -23,13 +23,16 @@ const Diagnostic: React.FC = () => {
     setProgress(0);
 
     try {
-      const results = await runDiagnostic(); // Appeler le service pour obtenir les résultats
-      setDiagnosticResults(results as any); // Assurez-vous que les types correspondent
+      const results = await runDiagnostic((newProgress) => {
+        setProgress(newProgress);
+      });
+      setDiagnosticResults(results as { cpu: string; memory: string; diskC: string; diskD: string; }); // Mettre à jour les résultats
     } catch (error) {
       console.error("Erreur lors de l'exécution du diagnostic:", error);
     } finally {
+      console.log('Diagnostic terminé');
       setIsAnalyzing(false);
-      setProgress(100);
+      setProgress(100); // Assurez-vous que la progression soit à 100% à la fin.
     }
   };
 

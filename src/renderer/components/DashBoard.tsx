@@ -1,10 +1,15 @@
+// Dashboard.tsx
 import React, { useEffect, useState } from 'react';
-import CPUInfo from './components/CPUInfo';
-import MemoryInfo from './components/MemoryInfo';
-import { DashboardInfo } from '../main/types';
-import DiskInfo from './components/DiskInfo';
+import { fetchSystemData } from '../../services/systemServices'; // Importer le service
+import CPUInfo from './CPUInfo';
+import MemoryInfo from './MemoryInfo';
+import { useNavigate } from 'react-router-dom'; // Importer useNavigate
+import DiskInfo from './DiskInfo';
+import { DashboardInfo } from '../../main/types';
 
 const Dashboard: React.FC = () => {
+  const navigate = useNavigate(); // Initialiser useNavigate pour la redirection
+
   const [dashboardInfo, setDashboardInfo] = useState<DashboardInfo | null>(
     null,
   );
@@ -12,14 +17,14 @@ const Dashboard: React.FC = () => {
 
   useEffect(() => {
     const fetchDashboardInfo = async () => {
-      try {
-        const response = await window.electron.ipcRenderer.getSystemInfo();
+      const response = await fetchSystemData();
+      if (response) {
         setDashboardInfo(response);
-      } catch (err) {
+      } else {
         setError('Failed to load dashboard information.');
-        console.error(err);
       }
     };
+
     fetchDashboardInfo();
 
     // intervalle de 2sec
@@ -34,6 +39,7 @@ const Dashboard: React.FC = () => {
 
   return (
     <div>
+      <button onClick={() => navigate('/diagnostic')}>Diagnostic</button>
       <h1>Dashboard</h1>
       <div className="dashboard-container">
         <div className="dashboards-container">
@@ -53,10 +59,6 @@ const Dashboard: React.FC = () => {
           </div>
         </div>
       </div>
-      {/* bouton pour lancer un diagnostic de santé du pc */}
-      <button onClick={() => { /* Add your diagnostic function here */ }}>
-        Diagnostic
-      </button>
     </div>
   );
 };

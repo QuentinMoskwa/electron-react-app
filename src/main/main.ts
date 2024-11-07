@@ -6,7 +6,7 @@ import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
-import osu from 'node-os-utils'; // Importer node-os-utils
+import { getSystemInfo } from '../utils/systemInfo';
 
 class AppUpdater {
   constructor() {
@@ -18,35 +18,12 @@ class AppUpdater {
 
 let mainWindow: BrowserWindow | null = null;
 
-ipcMain.on('ipc-example', async (event, arg) => {
-  const msgTemplate = (pingPong: string) => `IPC test: ${pingPong}`;
-  console.log(msgTemplate(arg));
-  event.reply('ipc-example', msgTemplate('pong'));
-});
 
 // Ajout d'un gestionnaire pour obtenir les informations système
 ipcMain.handle('get-system-info', async () => {
   try {
-    const cpuUsage = await osu.cpu.usage(); // Get CPU usage percentage
-    const cpuModel = osu.cpu.model(); // Get CPU model
-    const cpuCount = osu.cpu.count(); // Get number of CPU cores
-    const memInfo = await osu.mem.info(); // Get memory information
-    // const diskInfo = await osu.drive.info(); // Get disk information
-
-    return {
-      cpu: {
-        model: cpuModel,
-        load: cpuUsage, // Pourcentage d'utilisation du CPU
-        cores: cpuCount, // Nombre de cœurs CPU
-      },
-      memory: {
-        total: memInfo.totalMemMb, // Total memory in MB
-        used: memInfo.usedMemMb, // Used memory in MB
-        free: memInfo.freeMemMb, // Free memory in MB
-        usage: (memInfo.usedMemMb / memInfo.totalMemMb) * 100, // Pourcentage d'utilisation de la mémoire
-      }
-      // disk: diskInfo, // Informations sur le disque
-    };
+    const systemInfo = await getSystemInfo(); // Récupérer les infos système
+    return systemInfo;
   } catch (error) {
     console.error('Failed to get system info:', error);
     throw error;
@@ -116,7 +93,8 @@ const createWindow = async () => {
       mainWindow.show();
     }
   });
-  mainWindow.maximize();
+  // make the window pop behind everything
+  // mainWindow.hide();
   mainWindow.on('closed', () => {
     mainWindow = null;
   });

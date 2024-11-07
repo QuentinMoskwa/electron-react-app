@@ -1,7 +1,7 @@
 // components/MemoryInfo.tsx
 import React from 'react';
 import ReactSpeedometer from 'react-d3-speedometer';
-import { MemoryData } from '../main/types';
+import { MemoryData } from '../../main/types';
 
 interface MemoryInfoProps {
   memory: MemoryData;
@@ -9,7 +9,7 @@ interface MemoryInfoProps {
 
 const MemoryInfo: React.FC<MemoryInfoProps> = ({ memory }) => (
   <div>
-    <h2>Memory</h2>
+    <h2>RAM</h2>
     <ReactSpeedometer
       maxValue={100}
       value={memory.usage}
@@ -17,7 +17,7 @@ const MemoryInfo: React.FC<MemoryInfoProps> = ({ memory }) => (
       startColor="green"
       endColor="orange"
       segments={10}
-      currentValueText={`Memory Usage: ${memory.usage}%`}
+      currentValueText={`charge RAM: ${memory.usage}%`}
     />
   </div>
 );
